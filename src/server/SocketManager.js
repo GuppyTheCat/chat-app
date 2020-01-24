@@ -3,14 +3,21 @@ const io = require('./index').io;
 const {
     VERIFY_USER,
     USER_CONNECTED,
-    LOGOUT
+    LOGOUT,
+    DEFAULT_CHAT,
+    NEW_CHAT,
+    NEW_CHAT_USER
 } = require('../Events');
 
 const {
     createUser,
     createMessage,
     createChat
-} = require('../Factories');
+} = require('../Classes');
+
+let defaultChat = createChat();
+
+let chats = [defaultChat];
 
 let connectedUsers = {};
 
@@ -39,6 +46,20 @@ module.exports = function (socket) {
 
         io.emit(USER_CONNECTED, connectedUsers);
         console.log(connectedUsers)
+    })
+
+    socket.on(LOGOUT, () => {
+        connectedUsers = removeUser(connectedUsers, socket.user.name)
+    })
+
+    socket.on(DEFAULT_CHAT, (callback) => {
+        callback(defaultChat)
+    })
+
+    socket.on(NEW_CHAT, (chatName) => {
+        let chat = createChat({name: chatName});
+        chats.push(chat);
+        console.log(chats);
     })
 }
 
