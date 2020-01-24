@@ -31,7 +31,7 @@ export default class ChatContainer extends Component {
         return this.addChat(chat, true);
     }
 
-    addChat(chat, reset = false) {
+    addChat = (chat, reset = false) => {
         const { socket } = this.props;
         const { chats } = this.state;
         const newChats = reset ? [chat] : [...chats, chat];
@@ -40,10 +40,10 @@ export default class ChatContainer extends Component {
 
     }
 
-    newChat = ( chatName ) => {
+    createNewChat = ( event ) => {
         const { socket } = this.props;
-        chatName = '123'
-        socket.emit(NEW_CHAT, chatName);
+        let chatName = event.target.type;
+        socket.emit(NEW_CHAT, chatName, this.addChat);
     }
 
     setActiveChat(chat) {
@@ -67,7 +67,7 @@ export default class ChatContainer extends Component {
                     </Col>
                     <Col className='chat-room bg-light' sm='7' md='8' lg='9'>
                         'chat-room'
-                        <Button onClick={this.newChat}>Create chat</Button>
+                        <Button onClick={this.createNewChat}>Create chat</Button>
                     </Col>
                 </Row>
             </Container>

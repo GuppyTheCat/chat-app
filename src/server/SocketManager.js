@@ -56,10 +56,11 @@ module.exports = function (socket) {
         callback(defaultChat)
     })
 
-    socket.on(NEW_CHAT, (chatName) => {
+    socket.on(NEW_CHAT, (chatName, callback) => {
         let chat = createChat({name: chatName});
         chats.push(chat);
         console.log(chats);
+        callback(chat);
     })
 }
 
