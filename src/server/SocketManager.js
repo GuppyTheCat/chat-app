@@ -7,7 +7,9 @@ const {
     DEFAULT_CHAT,
     NEW_CHAT,
     UPDATE_CHATS,
-    NEW_CHAT_USER
+    NEW_CHAT_USER,
+    SEND_MESSAGE,
+    RECEIVE_MESSAGE
 } = require('../Events');
 
 const {
@@ -49,7 +51,7 @@ module.exports = function (socket) {
     })
 
     socket.on(LOGOUT, () => {
-        removeUserFromChats(socket);
+        chats = removeUserFromChats(socket);
         connectedUsers = removeUser(connectedUsers, socket.user.name);
         io.emit(UPDATE_CHATS, chats);
     })
@@ -67,6 +69,18 @@ module.exports = function (socket) {
         chats.push(newChat);
         io.emit(UPDATE_CHATS, chats, user.id, newChat.id)
     })
+
+    socket.on(SEND_MESSAGE, function ({ chatId, user, message }) {
+        sendMessageToChat(chatId, user, message)
+    })
+
+}
+
+function sendMessageToChat(chatId, user, message) {
+
+    return (chatId, user, message) => {
+        io.emit(`${RECIEVE_MESSAGE}-${chatId}`, createMessage({ message, user }))
+    }
 }
 
 function isUser(userList, username) {
@@ -94,4 +108,5 @@ function removeUserFromChats(socket) {
             }
         }
     }
+    return chats
 }

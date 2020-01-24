@@ -30,26 +30,28 @@ export default class SideBar extends Component {
         const { chats, activeChat, user, setActiveChat, logout } = this.props;
         return (
             <React.Fragment>
-                <div className="header">
-                    <h3>Chat App</h3>
-                </div>
                 <div>
-                    <p className='greeting'>Hello, {user.name}!</p>
+                    <h4>Chat App</h4>
+                    <p className='greeting'>Welcome, {user.name}!</p>
                     <Form>
                         <Form.Control type="text" placeholder="Enter chat room title" onChange={this.handleChatRoomTitleChange} />
-                        <Button onClick={this.createNewChat} variant='light'>Create chat room</Button>
+                        <Button className='createChatButton' onClick={this.createNewChat} variant='light'>Create chat room</Button>
                     </Form>
                 </div>
                 <div>
                     <ListGroup>
                         {
                             chats.map((chat) =>
-                                <ListGroup.Item className='chatList-title'>{chat.name}</ListGroup.Item>
+                                <ListGroup.Item
+                                    key={chat.id}
+                                    className='chatList-title'>
+                                    {chat.name}
+                                </ListGroup.Item>
                             )
                         }
                     </ListGroup>
                 </div>
-                <Button className='logout-button' onClick={logout} className='bg-danger'>
+                <Button onClick={logout} className='bg-danger logout-button'>
                     Logout
 				</Button>
             </React.Fragment>

@@ -3,6 +3,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import { DEFAULT_CHAT, NEW_CHAT, UPDATE_CHATS } from '../Events';
 import './ChatContainer.css';
 import SideBar from './SideBar'
+import ChatRoom from './ChatRoom'
 
 export default class ChatContainer extends Component {
     constructor(props) {
@@ -23,6 +24,7 @@ export default class ChatContainer extends Component {
 
         socket.emit(DEFAULT_CHAT, this.props.user);
         socket.on(UPDATE_CHATS, (chats, userId, chatId) => {
+            console.log(chats, userId, this.props.user.id)
             this.setState({ chats: chats, activeChat: userId === this.props.user.id ? chatId : this.state.activeChat })
         })
     }
@@ -47,7 +49,7 @@ export default class ChatContainer extends Component {
         return (
             <Container fluid className='chatContainer'>
                 <Row className='h-100'>
-                    <Col className='sidebar bg-primary' sm='5' md='4' lg='3'>
+                    <Col className='sidebar' sm='5' md='4' lg='3'>
                         <SideBar
                             socket={socket}
                             logout={logout}
@@ -57,8 +59,11 @@ export default class ChatContainer extends Component {
                             setActiveChat={(chat) => this.setActiveChat(chat)} />
                     </Col>
                     <Col className='chat-room bg-light' sm='7' md='8' lg='9'>
-                        'chat-room'
-
+                        <ChatRoom
+                            socket={socket}
+                            user={user}
+                            activeChat={activeChat}
+                        />
                     </Col>
                 </Row>
             </Container>

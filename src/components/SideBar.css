@@ -1,4 +1,15 @@
-.chatList-title{
+.chatList-title {
     margin: 0;
     overflow: hidden;
+}
+
+.createChatButton {
+    width: 100% !important;
+    margin: .5rem 0 2rem 0;
+}
+
+.logout-button{
+    display: block;
+    position: absolute;
+    bottom: 20px;
 }
