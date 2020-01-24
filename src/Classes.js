@@ -16,12 +16,12 @@ const createMessage = ({ message = '', sender = '' } = {}) => (
     }
 )
 
-const createChat = ({ name = 'Default Chat' } = {}) => (
+const createChat = ({ name = 'Default Chat', users = [] } = {}) => (
     {
         id: uuidv4(),
         name,
         messages: [],
-        users: [],
+        users,
         typingUsers: []
     }
 )

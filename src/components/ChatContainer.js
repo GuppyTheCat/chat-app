@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import { DEFAULT_CHAT, NEW_CHAT,UPDATE_CHATS } from '../Events';
+import { DEFAULT_CHAT, NEW_CHAT, UPDATE_CHATS } from '../Events';
 import './ChatContainer.css';
 import SideBar from './SideBar'
 
@@ -15,18 +15,15 @@ export default class ChatContainer extends Component {
     }
 
     componentDidMount() {
-        const { socket } = this.props;
-
         this.initSocket();
     }
 
     initSocket() {
         const { socket } = this.props;
-        socket.on('connect', () => {
-            socket.emit(DEFAULT_CHAT, this.addChat);
-        })
-        socket.on(UPDATE_CHATS,(chats)=>{
-            this.setState({chats: chats})
+
+        socket.emit(DEFAULT_CHAT, this.props.user);
+        socket.on(UPDATE_CHATS, (chats, userId, chatId) => {
+            this.setState({ chats: chats, activeChat: userId === this.props.user.id ? chatId : this.state.activeChat })
         })
     }
 
@@ -35,22 +32,16 @@ export default class ChatContainer extends Component {
         const { chats } = this.state;
         const newChats = [...chats, chat];
 
-        this.setState({ chats: newChats, activeChat: chat });
+        this.setState({ chats: newChats, activeChat: chat.id });
 
-    }
-
-    createNewChat = ( event ) => {
-        const { socket } = this.props;
-        let chatName = event.target.type;
-        socket.emit(NEW_CHAT, chatName, this.addChat);
     }
 
     setActiveChat(chat) {
-        this.setState({ activeChat: chat })
+        this.setState({ activeChat: chat.id })
     }
 
     render() {
-        const { user, logout } = this.props
+        const { user, logout, socket } = this.props
         const { activeChat, chats } = this.state
 
         return (
@@ -58,6 +49,7 @@ export default class ChatContainer extends Component {
                 <Row className='h-100'>
                     <Col className='sidebar bg-primary' sm='5' md='4' lg='3'>
                         <SideBar
+                            socket={socket}
                             logout={logout}
                             chats={chats}
                             user={user}
@@ -66,7 +58,7 @@ export default class ChatContainer extends Component {
                     </Col>
                     <Col className='chat-room bg-light' sm='7' md='8' lg='9'>
                         'chat-room'
-                        <Button onClick={this.createNewChat}>Create chat</Button>
+
                     </Col>
                 </Row>
             </Container>

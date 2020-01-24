@@ -1,7 +1,31 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, ListGroup } from 'react-bootstrap';
+import { NEW_CHAT } from '../Events';
+import './SideBar.css';
 
 export default class SideBar extends Component {
+
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            newChatRoomTitle: ''
+        }
+    }
+
+
+    createNewChat = () => {
+        const { socket } = this.props;
+        let chatName = this.state.newChatRoomTitle;
+        let user = this.props.user;
+        if (chatName)
+            socket.emit(NEW_CHAT, chatName, user);
+    }
+
+    handleChatRoomTitleChange = (e) => {
+        this.setState({ newChatRoomTitle: e.target.value })
+    }
+
     render() {
         const { chats, activeChat, user, setActiveChat, logout } = this.props;
         return (
@@ -9,46 +33,25 @@ export default class SideBar extends Component {
                 <div className="header">
                     <h3>Chat App</h3>
                 </div>
-                <div className="current-user">
-                    <span>Hello, {user.name}!</span>
-                    <Button onClick={logout} className='bg-danger'>
-                        Logout
-					</Button>
+                <div>
+                    <p className='greeting'>Hello, {user.name}!</p>
+                    <Form>
+                        <Form.Control type="text" placeholder="Enter chat room title" onChange={this.handleChatRoomTitleChange} />
+                        <Button onClick={this.createNewChat} variant='light'>Create chat room</Button>
+                    </Form>
                 </div>
-                <div
-                    className="users"
-                    ref='users'
-                    onClick={(e) => { (e.target === this.refs.user) && setActiveChat(null) }}>
-
-                    {
-                        chats.map((chat) => {
-                            if (chat.name) {
-                                const lastMessage = chat.messages[chat.messages.length - 1];
-                                const user = chat.users.find(({ name }) => {
-                                    return name !== this.props.name
-                                }) || { name: "Community" }
-                                const classNames = (activeChat && activeChat.id === chat.id) ? 'active' : ''
-                                return (
-                                    <div
-                                        key={chat.id}
-                                        className={`user ${classNames}`}
-                                        onClick={() => { setActiveChat(chat) }}
-                                    >
-                                        <div className="user-photo">{user.name[0].toUpperCase()}</div>
-                                        <div className="user-info">
-                                            <div className="name">{user.name}</div>
-                                            {lastMessage && <div className="last-message">{lastMessage.message}</div>}
-                                        </div>
-
-                                    </div>
-                                )
-                            }
-
-                            return null
-                        })
-                    }
-
+                <div>
+                    <ListGroup>
+                        {
+                            chats.map((chat) =>
+                                <ListGroup.Item className='chatList-title'>{chat.name}</ListGroup.Item>
+                            )
+                        }
+                    </ListGroup>
                 </div>
+                <Button className='logout-button' onClick={logout} className='bg-danger'>
+                    Logout
+				</Button>
             </React.Fragment>
         )
     }

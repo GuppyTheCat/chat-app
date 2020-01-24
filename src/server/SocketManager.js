@@ -45,24 +45,27 @@ module.exports = function (socket) {
         connectedUsers = addUser(connectedUsers, user);
         socket.user = user;
 
-        io.emit(USER_CONNECTED, connectedUsers);
         io.emit(UPDATE_CHATS, chats);
-        console.log(connectedUsers)
     })
 
     socket.on(LOGOUT, () => {
-        connectedUsers = removeUser(connectedUsers, socket.user.name)
+        removeUserFromChats(socket);
+        connectedUsers = removeUser(connectedUsers, socket.user.name);
+        io.emit(UPDATE_CHATS, chats);
     })
 
-    socket.on(DEFAULT_CHAT, (callback) => {
-        callback(defaultChat)
-    })
-
-    socket.on(NEW_CHAT, (chatName) => {
-        let chat = createChat({name: chatName});
-        chats.push(chat);
-        console.log(chats);
+    socket.on(DEFAULT_CHAT, (user) => {
+        chats[0].users.push(user)
         io.emit(UPDATE_CHATS, chats)
+    })
+
+    socket.on(NEW_CHAT, (chatName, user) => {
+        let newChat = createChat({
+            name: chatName,
+            users: [user]
+        });
+        chats.push(newChat);
+        io.emit(UPDATE_CHATS, chats, user.id, newChat.id)
     })
 }
 
@@ -80,4 +83,15 @@ function removeUser(userList, username) {
     let newList = Object.assign({}, userList);
     delete newList[username];
     return newList
+}
+
+function removeUserFromChats(socket) {
+    for (let chat of chats) {
+        console.log(chat)
+        for (let i = 0; i < chat.users.length; i++) {
+            if (chat.users[i] === socket.user) {
+                chat = chat.users.pop(chat.users[i])
+            }
+        }
+    }
 }
