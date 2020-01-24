@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import { DEFAULT_CHAT, NEW_CHAT } from '../Events';
+import { DEFAULT_CHAT, NEW_CHAT,UPDATE_CHATS } from '../Events';
 import './ChatContainer.css';
 import SideBar from './SideBar'
 
@@ -16,27 +16,26 @@ export default class ChatContainer extends Component {
 
     componentDidMount() {
         const { socket } = this.props;
-        socket.emit(DEFAULT_CHAT, this.resetChat);
+
         this.initSocket();
     }
 
     initSocket() {
         const { socket } = this.props;
         socket.on('connect', () => {
-            socket.emit(DEFAULT_CHAT, this.resetChat);
+            socket.emit(DEFAULT_CHAT, this.addChat);
+        })
+        socket.on(UPDATE_CHATS,(chats)=>{
+            this.setState({chats: chats})
         })
     }
 
-    resetChat = (chat) => {
-        return this.addChat(chat, true);
-    }
-
-    addChat = (chat, reset = false) => {
+    addChat = (chat) => {
         const { socket } = this.props;
         const { chats } = this.state;
-        const newChats = reset ? [chat] : [...chats, chat];
+        const newChats = [...chats, chat];
 
-        this.setState({ chats: newChats, activeChat: reset ? chat : this.state.activeChat });
+        this.setState({ chats: newChats, activeChat: chat });
 
     }
 

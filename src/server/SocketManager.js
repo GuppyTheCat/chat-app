@@ -6,6 +6,7 @@ const {
     LOGOUT,
     DEFAULT_CHAT,
     NEW_CHAT,
+    UPDATE_CHATS,
     NEW_CHAT_USER
 } = require('../Events');
 
@@ -45,6 +46,7 @@ module.exports = function (socket) {
         socket.user = user;
 
         io.emit(USER_CONNECTED, connectedUsers);
+        io.emit(UPDATE_CHATS, chats);
         console.log(connectedUsers)
     })
 
@@ -56,11 +58,11 @@ module.exports = function (socket) {
         callback(defaultChat)
     })
 
-    socket.on(NEW_CHAT, (chatName, callback) => {
+    socket.on(NEW_CHAT, (chatName) => {
         let chat = createChat({name: chatName});
         chats.push(chat);
         console.log(chats);
-        callback(chat);
+        io.emit(UPDATE_CHATS, chats)
     })
 }
 
