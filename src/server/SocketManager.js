@@ -8,10 +8,10 @@ const {
     CREATE_NEW_CHAT,
     UPDATE_CHATS,
     CREATE_NEW_CHAT_USER,
-    SEND_MESSAGE,
-    RECEIVE_MESSAGE,
+    CREATE_NEW_MESSAGE,
     NEW_CHAT_CREATED,
-    ADD_USER_TO_CHAT
+    ADD_USER_TO_CHAT,
+    RECIEVE_MESSAGE
 } = require('../Events');
 
 const {
@@ -48,8 +48,7 @@ module.exports = function (socket) {
     socket.on(USER_CONNECTED, (user) => {
         connectedUsers = addUser(connectedUsers, user);
         socket.user = user;
-
-        io.emit(UPDATE_CHATS, chats);
+        /*io.emit(UPDATE_CHATS, chats);*/
     })
 
     socket.on(LOGOUT, () => {
@@ -79,19 +78,20 @@ module.exports = function (socket) {
         io.emit(NEW_CHAT_CREATED, newChat, user.id);
     })
 
-    socket.on(SEND_MESSAGE, function ({ chatId, user, message }) {
-        sendMessageToChat(chatId, user, message)
+    socket.on(CREATE_NEW_MESSAGE, (chatId, user, message) => {
+        console.log(chatId, user, message)
+        io.emit(RECIEVE_MESSAGE, chatId, createMessage({ message: message, sender: user }))
     })
 
 }
-
+/*
 function sendMessageToChat(chatId, user, message) {
 
     return (chatId, user, message) => {
         io.emit(`${RECIEVE_MESSAGE}-${chatId}`, createMessage({ message, user }))
     }
 }
-
+*/
 function isUser(userList, username) {
     return username in userList
 }

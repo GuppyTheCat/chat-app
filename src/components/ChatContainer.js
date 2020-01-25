@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import { DEFAULT_CHAT, NEW_CHAT_CREATED, UPDATE_CHATS, ADD_USER_TO_CHAT } from '../Events';
+import { DEFAULT_CHAT, NEW_CHAT_CREATED, UPDATE_CHATS, ADD_USER_TO_CHAT, RECIEVE_MESSAGE } from '../Events';
 import './ChatContainer.css';
 import SideBar from './SideBar'
 import ChatRoom from './ChatRoom'
@@ -38,11 +38,25 @@ export default class ChatContainer extends Component {
 
         socket.on(ADD_USER_TO_CHAT, (chatId, user) => {
             const { chats } = this.state;
-            for (let chat of chats) {
+            let newChats = chats.map((chat) => {
                 if (chat.id === chatId) {
                     chat.users.push(user)
                 }
-            }
+                return chat;
+            })
+            this.setState({ chats: newChats })
+        })
+
+        socket.on(RECIEVE_MESSAGE, (chatId, message) => {
+            const { chats } = this.state;
+            let newChats = chats.map((chat) => {
+                
+                if (chat.id === chatId) {
+                    chat.messages.push(message)
+                }
+                return chat;
+            })
+            this.setState({ chats: newChats })
         })
     }
 
