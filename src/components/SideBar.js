@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Button, Form, ListGroup } from 'react-bootstrap';
-import { NEW_CHAT } from '../Events';
+import { CREATE_NEW_CHAT } from '../Events';
 import './SideBar.css';
 
 export default class SideBar extends Component {
@@ -18,8 +18,9 @@ export default class SideBar extends Component {
         const { socket } = this.props;
         let chatName = this.state.newChatRoomTitle;
         let user = this.props.user;
-        if (chatName)
-            socket.emit(NEW_CHAT, chatName, user);
+        if (chatName) {
+            socket.emit(CREATE_NEW_CHAT, chatName, user);
+        }
     }
 
     handleChatRoomTitleChange = (e) => {
@@ -44,7 +45,9 @@ export default class SideBar extends Component {
                             chats.map((chat) =>
                                 <ListGroup.Item
                                     key={chat.id}
-                                    className='chatList-title'>
+                                    className='chatList-title'
+                                    onClick={() => { setActiveChat(chat) }}
+                                >
                                     {chat.name}
                                 </ListGroup.Item>
                             )

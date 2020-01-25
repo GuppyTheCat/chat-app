@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import { DEFAULT_CHAT, NEW_CHAT, UPDATE_CHATS } from '../Events';
+import { DEFAULT_CHAT, NEW_CHAT_CREATED, UPDATE_CHATS, ADD_USER_TO_CHAT } from '../Events';
 import './ChatContainer.css';
 import SideBar from './SideBar'
 import ChatRoom from './ChatRoom'
@@ -22,10 +22,27 @@ export default class ChatContainer extends Component {
     initSocket() {
         const { socket } = this.props;
 
-        socket.emit(DEFAULT_CHAT, this.props.user);
-        socket.on(UPDATE_CHATS, (chats, userId, chatId) => {
+        socket.emit(DEFAULT_CHAT, this.addChat);
+        /*socket.emit(DEFAULT_CHAT, this.props.user);*/
+        /*socket.on(UPDATE_CHATS, (chats, userId, chatId) => {
             console.log(chats, userId, this.props.user.id)
             this.setState({ chats: chats, activeChat: userId === this.props.user.id ? chatId : this.state.activeChat })
+        })*/
+
+        socket.on(NEW_CHAT_CREATED, (newChat, userId) => {
+            this.addChat(newChat);
+            if (userId === this.props.user.id) {
+                this.setState({ activeChat: newChat.id })
+            }
+        });
+
+        socket.on(ADD_USER_TO_CHAT, (chatId, user) => {
+            const { chats } = this.state;
+            for (let chat of chats) {
+                if (chat.id === chatId) {
+                    chat.users.push(user)
+                }
+            }
         })
     }
 
@@ -34,7 +51,7 @@ export default class ChatContainer extends Component {
         const { chats } = this.state;
         const newChats = [...chats, chat];
 
-        this.setState({ chats: newChats, activeChat: chat.id });
+        this.setState({ chats: newChats });
 
     }
 
