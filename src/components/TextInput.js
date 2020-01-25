@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { FormControl, Button, Col } from 'react-bootstrap';
 import { CREATE_NEW_MESSAGE } from '../Events';
 import './TextInput.css';
 
@@ -36,17 +36,17 @@ export default class TextInput extends Component {
         const { message } = this.state
         return (
             <React.Fragment>
-                <Form className='message-form'>
-                    <Form.Control
-                        className='message-input'
+                <Col className='message-input col-8 col-lg-9'>
+                    <FormControl
                         type="text"
                         placeholder="Enter your message"
                         onChange={this.handleTextChange}
                         value={message}
                     />
-                    <Button className='message-button' onClick={this.handleSubmit}>Send message</Button>
-                </Form>
-
+                </Col>
+                <Col className='message-button col-4 col-lg-3'>
+                    <Button  onClick={this.handleSubmit}>Send message</Button>
+                </Col>
             </React.Fragment>
         )
     }

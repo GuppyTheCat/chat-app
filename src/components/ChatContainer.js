@@ -94,6 +94,7 @@ export default class ChatContainer extends Component {
                             socket={socket}
                             user={user}
                             activeChat={activeChat}
+                            chats={chats}
                         />
                     </Col>
                 </Row>
