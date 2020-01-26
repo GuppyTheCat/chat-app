@@ -19,7 +19,6 @@ export default class ChatMessages extends Component {
         const { activeChat, chats } = this.props;
         if (activeChat && chats.length > 0) {
             let messages = chats.filter(chat => activeChat === chat.id)[0].messages
-            console.log(messages)
             this.setState({ activeChatMessages: messages })
         }
     }
@@ -27,7 +26,7 @@ export default class ChatMessages extends Component {
     render() {
         const messages = this.state.activeChatMessages;
         const { user } = this.props;
-        console.log(messages)
+
         return (
             <div className="thread-container">
                 <div className="thread">

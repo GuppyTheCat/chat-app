@@ -6,12 +6,12 @@ const {
     LOGOUT,
     DEFAULT_CHAT,
     CREATE_NEW_CHAT,
-    UPDATE_CHATS,
-    CREATE_NEW_CHAT_USER,
     CREATE_NEW_MESSAGE,
     NEW_CHAT_CREATED,
     ADD_USER_TO_CHAT,
-    RECIEVE_MESSAGE
+    RECIEVE_MESSAGE,
+    GET_CHAT,
+    SEND_CHAT
 } = require('../Events');
 
 const {
@@ -48,20 +48,13 @@ module.exports = function (socket) {
     socket.on(USER_CONNECTED, (user) => {
         connectedUsers = addUser(connectedUsers, user);
         socket.user = user;
-        /*io.emit(UPDATE_CHATS, chats);*/
     })
 
     socket.on(LOGOUT, () => {
         chats = removeUserFromChats(socket);
         connectedUsers = removeUser(connectedUsers, socket.user.name);
-        io.emit(UPDATE_CHATS, chats);
     })
-    /*
-        socket.on(DEFAULT_CHAT, (user) => {
-            chats[0].users.push(user)
-            io.emit(UPDATE_CHATS, chats)
-        })
-    */
+
     socket.on(DEFAULT_CHAT, (callback) => {
         let user = socket.user;
         callback(chats[0]);
@@ -79,19 +72,26 @@ module.exports = function (socket) {
     })
 
     socket.on(CREATE_NEW_MESSAGE, (chatId, user, message) => {
-        console.log(chatId, user, message)
-        io.emit(RECIEVE_MESSAGE, chatId, createMessage({ message: message, sender: user }))
+        let newMessage = createMessage({ message: message, sender: user });
+        for (let chat of chats) {
+            if (chatId === chat.id) {
+                chat.messages.push(newMessage);
+                break;
+            }
+        }
+        io.emit(RECIEVE_MESSAGE, chatId, newMessage);
+    })
+
+    socket.on(GET_CHAT, (chatId) => {
+        for (let chat of chats) {
+            if (chatId === chat.id) {
+                socket.emit(SEND_CHAT, chat)
+            }
+        }
     })
 
 }
-/*
-function sendMessageToChat(chatId, user, message) {
 
-    return (chatId, user, message) => {
-        io.emit(`${RECIEVE_MESSAGE}-${chatId}`, createMessage({ message, user }))
-    }
-}
-*/
 function isUser(userList, username) {
     return username in userList
 }
@@ -110,7 +110,6 @@ function removeUser(userList, username) {
 
 function removeUserFromChats(socket) {
     for (let chat of chats) {
-        console.log(chat)
         for (let i = 0; i < chat.users.length; i++) {
             if (chat.users[i] === socket.user) {
                 chat = chat.users.pop(chat.users[i])

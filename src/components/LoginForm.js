@@ -46,7 +46,7 @@ export default class LoginForm extends Component {
                 <Row className="justify-content-center align-items-center vh-100">
                     <Col sm='6 ' md='5' lg='4' xl='3'>
                         <Form onSubmit={this.handleSubmit} className='login-form'>
-                            <Form.Label htmlFor='username'>Enter your nickname</Form.Label>
+                            <Form.Label>Enter your nickname</Form.Label>
                             <Form.Control
                                 type='text'
                                 id='username'
@@ -54,7 +54,7 @@ export default class LoginForm extends Component {
                                 onChange={this.handleChange}
                                 placeholder='Username' />
                             {
-                                <Alert variant='danger mt-3' className={error ? 'visible' : 'invisible'}>
+                                <Alert variant='danger' className={error ? 'visible' : 'invisible'}>
                                     {error}
                                 </Alert>
                             }

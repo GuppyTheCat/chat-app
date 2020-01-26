@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Button, Form, ListGroup } from 'react-bootstrap';
-import { CREATE_NEW_CHAT } from '../Events';
+import { CREATE_NEW_CHAT, GET_CHAT } from '../Events';
 import './SideBar.css';
 
 export default class SideBar extends Component {
@@ -27,9 +27,17 @@ export default class SideBar extends Component {
         this.setState({ newChatRoomTitle: e.target.value })
     }
 
+    enterChat = (e) => {
+        const { socket } = this.props;
+        let chatId = e.currentTarget.getAttribute('value');
+        this.props.setActiveChat(chatId);
+        socket.emit(GET_CHAT, chatId);
+    }
+
     render() {
-        const { chats, user, setActiveChat, logout } = this.props;
-        const { newChatRoomTitle } = this.state
+        const { chats, user, logout } = this.props;
+        const { newChatRoomTitle } = this.state;
+
         return (
             <React.Fragment>
                 <Row>
@@ -41,11 +49,11 @@ export default class SideBar extends Component {
                     </Col>
                     <Col className='sidebar-newChatForm col-12'>
                         <Form>
-                            <Form.Control 
-                            type="text" 
-                            placeholder="Enter chat room title" 
-                            onChange={this.handleChatRoomTitleChange}
-                            value={newChatRoomTitle} 
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter chat room title"
+                                onChange={this.handleChatRoomTitleChange}
+                                value={newChatRoomTitle}
                             />
                             <Button className='createChatButton' onClick={this.createNewChat} variant='light'>Create chat room</Button>
                         </Form>
@@ -57,7 +65,8 @@ export default class SideBar extends Component {
                                     <ListGroup.Item
                                         key={chat.id}
                                         className='chatList-title'
-                                        onClick={() => { setActiveChat(chat) }}
+                                        value={chat.id}
+                                        onClick={this.enterChat}
                                     >
                                         {chat.name}
                                     </ListGroup.Item>

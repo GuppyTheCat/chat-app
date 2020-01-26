@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
-import { DEFAULT_CHAT, NEW_CHAT_CREATED, UPDATE_CHATS, ADD_USER_TO_CHAT, RECIEVE_MESSAGE } from '../Events';
+import { Container, Row, Col } from 'react-bootstrap';
+import { DEFAULT_CHAT, NEW_CHAT_CREATED, ADD_USER_TO_CHAT, RECIEVE_MESSAGE, SEND_CHAT  } from '../Events';
 import './ChatContainer.css';
 import SideBar from './SideBar'
 import ChatRoom from './ChatRoom'
@@ -23,11 +23,6 @@ export default class ChatContainer extends Component {
         const { socket } = this.props;
 
         socket.emit(DEFAULT_CHAT, this.addChat);
-        /*socket.emit(DEFAULT_CHAT, this.props.user);*/
-        /*socket.on(UPDATE_CHATS, (chats, userId, chatId) => {
-            console.log(chats, userId, this.props.user.id)
-            this.setState({ chats: chats, activeChat: userId === this.props.user.id ? chatId : this.state.activeChat })
-        })*/
 
         socket.on(NEW_CHAT_CREATED, (newChat, userId) => {
             this.addChat(newChat);
@@ -38,9 +33,13 @@ export default class ChatContainer extends Component {
 
         socket.on(ADD_USER_TO_CHAT, (chatId, user) => {
             const { chats } = this.state;
-            let newChats = chats.map((chat) => {
+            let newChats = chats.map((chat, index) => {
                 if (chat.id === chatId) {
                     chat.users.push(user)
+                    //If current user is added to chat, set active chat (for default chat)
+                    if (user.id === this.props.user.id) {
+                        this.setState({ activeChat: chatId })
+                    }
                 }
                 return chat;
             })
@@ -58,10 +57,22 @@ export default class ChatContainer extends Component {
             })
             this.setState({ chats: newChats })
         })
+
+        socket.on(SEND_CHAT, (newChat)=>{
+            const { chats } = this.state;
+
+            let newChats = chats.map((chat) => {
+                if (chat.id===newChat.id){
+                    chat = newChat;
+                }
+                return chat
+            })
+
+            this.setState({ chats: newChats })
+        })
     }
 
     addChat = (chat) => {
-        const { socket } = this.props;
         const { chats } = this.state;
         const newChats = [...chats, chat];
 
@@ -69,8 +80,8 @@ export default class ChatContainer extends Component {
 
     }
 
-    setActiveChat(chat) {
-        this.setState({ activeChat: chat.id })
+    setActiveChat(chatId) {
+        this.setState({ activeChat: chatId })
     }
 
     render() {
@@ -87,7 +98,7 @@ export default class ChatContainer extends Component {
                             chats={chats}
                             user={user}
                             activeChat={activeChat}
-                            setActiveChat={(chat) => this.setActiveChat(chat)} />
+                            setActiveChat={(chatId) => this.setActiveChat(chatId)} />
                     </Col>
                     <Col className="chat-room-container">
                         <ChatRoom
