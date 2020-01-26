@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { MDBRow, MDBCol, MDBBtn, MDBListGroup, MDBListGroupItem, MDBInput } from 'mdbreact';
 import { CREATE_NEW_CHAT, GET_CHAT } from '../Events';
+import ChatsList from './ChatsList';
 import './SideBar.css';
 
 export default class SideBar extends Component {
@@ -35,16 +36,16 @@ export default class SideBar extends Component {
     }
 
     render() {
-        const { chats, user, logout } = this.props;
+        const { chats, user, logout, setActiveChat, socket } = this.props;
         const { newChatRoomTitle } = this.state;
 
         return (
             <React.Fragment>
                 <MDBRow>
-                    <MDBCol className='sidebar-title col-12 my-3'>
+                    <MDBCol className='sidebar-title col-12 py-3 z-depth-1'>
                         <h4>Chat App</h4>
                     </MDBCol>
-                    <MDBCol className='sidebar-greeting col-12 mb-2'>
+                    <MDBCol className='sidebar-greeting col-12 py-3 text-center'>
                         <p>Welcome, {user.name}!</p>
                     </MDBCol>
                     <MDBCol className='col-12'>
@@ -59,20 +60,18 @@ export default class SideBar extends Component {
                         </form>
                     </MDBCol>
                     <MDBCol className='col-12'>
-                        <MDBListGroup>
-                            {
-                                chats.map((chat) =>
-                                    <MDBListGroupItem
-                                        key={chat.id}
-                                        className='chatList-title'
-                                        value={chat.id}
-                                        onClick={this.enterChat}
-                                    >
-                                        {chat.name}
-                                    </MDBListGroupItem>
-                                )
-                            }
-                        </MDBListGroup>
+                        {
+                            chats.map((chat) =>
+                                <ChatsList
+                                    key={chat.id}
+                                    id={chat.id}
+                                    title={chat.name}
+                                    users={chat.users}
+                                    setActiveChat={(chatId) => this.props.setActiveChat(chatId)}
+                                    socket={socket}
+                                />
+                            )
+                        }
                     </MDBCol>
                 </MDBRow>
                 <MDBRow>

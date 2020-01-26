@@ -3,7 +3,8 @@
     justify-content: space-between;
     flex-direction: column;
     flex: 0 0 250px !important;
-    background-color: #cce5ff;
+    background-color: #e3f2fd;
+    max-height: 100vh;
 }
 
 @media screen and (max-width: 767px) {
@@ -16,4 +17,12 @@
     .sidebar-container {
         flex: 0 0 auto !important;
     }
+}
+
+.chat-room-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    width: 100%;
 }

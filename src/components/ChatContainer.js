@@ -94,7 +94,7 @@ export default class ChatContainer extends Component {
         return (
             <MDBContainer fluid className="flex-container">
                 <MDBRow className='vw-100'>
-                    <MDBCol className='sidebar-container'>
+                    <MDBCol className='sidebar-container z-depth-1'>
                         <SideBar
                             socket={socket}
                             logout={logout}

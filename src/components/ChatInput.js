@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { MDBInput, MDBBtn } from 'mdbreact';
 import { CREATE_NEW_MESSAGE } from '../Events';
-import './TextInput.css';
+import './ChatInput.css';
 
-export default class TextInput extends Component {
+export default class ChatInput extends Component {
     constructor(props) {
         super(props);
         this.state = { message: "", isTyping: false };
