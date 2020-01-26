@@ -51,8 +51,10 @@ module.exports = function (socket) {
     })
 
     socket.on(LOGOUT, () => {
-        chats = removeUserFromChats(socket);
-        connectedUsers = removeUser(connectedUsers, socket.user.name);
+        let user = socket.user;
+        chats = removeUserFromChats(user);
+        //Реализовать удаление юзера из чатов сокетов
+        connectedUsers = removeUser(connectedUsers, user.name);
     })
 
     socket.on(DEFAULT_CHAT, (callback) => {
@@ -108,13 +110,9 @@ function removeUser(userList, username) {
     return newList
 }
 
-function removeUserFromChats(socket) {
+function removeUserFromChats(user) {
     for (let chat of chats) {
-        for (let i = 0; i < chat.users.length; i++) {
-            if (chat.users[i] === socket.user) {
-                chat = chat.users.pop(chat.users[i])
-            }
-        }
+        chat.users = chat.users.filter(chatUser => chatUser.id !== user.id)
     }
     return chats
 }

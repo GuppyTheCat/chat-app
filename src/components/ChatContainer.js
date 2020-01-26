@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { DEFAULT_CHAT, NEW_CHAT_CREATED, ADD_USER_TO_CHAT, RECIEVE_MESSAGE, SEND_CHAT  } from '../Events';
+import { DEFAULT_CHAT, NEW_CHAT_CREATED, ADD_USER_TO_CHAT, RECIEVE_MESSAGE, SEND_CHAT } from '../Events';
 import './ChatContainer.css';
 import SideBar from './SideBar'
 import ChatRoom from './ChatRoom'
@@ -25,15 +25,18 @@ export default class ChatContainer extends Component {
         socket.emit(DEFAULT_CHAT, this.addChat);
 
         socket.on(NEW_CHAT_CREATED, (newChat, userId) => {
+            const { user } = this.props;
+
             this.addChat(newChat);
-            if (userId === this.props.user.id) {
+            if (userId === user.id) {
                 this.setState({ activeChat: newChat.id })
             }
         });
 
         socket.on(ADD_USER_TO_CHAT, (chatId, user) => {
             const { chats } = this.state;
-            let newChats = chats.map((chat, index) => {
+            
+            let newChats = chats.map(chat => {
                 if (chat.id === chatId) {
                     chat.users.push(user)
                     //If current user is added to chat, set active chat (for default chat)
@@ -58,11 +61,11 @@ export default class ChatContainer extends Component {
             this.setState({ chats: newChats })
         })
 
-        socket.on(SEND_CHAT, (newChat)=>{
+        socket.on(SEND_CHAT, (newChat) => {
             const { chats } = this.state;
 
             let newChats = chats.map((chat) => {
-                if (chat.id===newChat.id){
+                if (chat.id === newChat.id) {
                     chat = newChat;
                 }
                 return chat
@@ -85,12 +88,12 @@ export default class ChatContainer extends Component {
     }
 
     render() {
-        const { user, logout, socket } = this.props
-        const { activeChat, chats } = this.state
+        const { user, logout, socket } = this.props;
+        const { activeChat, chats } = this.state;
 
         return (
             <Container fluid className="flex-container">
-                <Row>
+                <Row className='vw-100'>
                     <Col className='sidebar-container'>
                         <SideBar
                             socket={socket}

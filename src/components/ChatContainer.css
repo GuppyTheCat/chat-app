@@ -1,19 +1,19 @@
-.sidebar-container{
-	display:flex;
-	justify-content:space-between;
-    flex-direction:column;
-    flex: 0 0 250px!important;
+.sidebar-container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    flex: 0 0 250px !important;
     background-color: #cce5ff;
 }
 
-@media screen and (max-width: 767px){
-    .sidebar-container{
-        flex: 0 0 200px!important;
+@media screen and (max-width: 767px) {
+    .sidebar-container {
+        flex: 0 0 200px !important;
     }
 }
 
-@media screen and (max-width: 575px){
-    .sidebar-container{
-        flex: 0 0 auto!important;
+@media screen and (max-width: 575px) {
+    .sidebar-container {
+        flex: 0 0 auto !important;
     }
 }
