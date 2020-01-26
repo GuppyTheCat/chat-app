@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { MDBRow, MDBCol, MDBBtn, MDBListGroup, MDBListGroupItem, MDBInput } from 'mdbreact';
-import { CREATE_NEW_CHAT, GET_CHAT } from '../Events';
+import { CREATE_NEW_CHAT, UPDATE_CHAT } from '../Events';
 import ChatsList from './ChatsList';
 import './SideBar.css';
 
@@ -32,7 +32,7 @@ export default class SideBar extends Component {
         const { socket } = this.props;
         let chatId = e.currentTarget.getAttribute('value');
         this.props.setActiveChat(chatId);
-        socket.emit(GET_CHAT, chatId);
+        socket.emit(UPDATE_CHAT, chatId);
     }
 
     render() {

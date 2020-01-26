@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { GET_CHAT } from '../Events';
+import { UPDATE_CHAT } from '../Events';
 import {
     MDBNavbar,
     MDBNavbarBrand,
@@ -27,7 +27,7 @@ export default class ChatsList extends Component {
         const { socket } = this.props;
         let chatId = e.currentTarget.getAttribute('id');
         this.props.setActiveChat(chatId);
-        socket.emit(GET_CHAT, chatId);
+        socket.emit(UPDATE_CHAT, chatId);
     }
 
     render() {

@@ -11,6 +11,7 @@ const {
     ADD_USER_TO_CHAT,
     RECIEVE_MESSAGE,
     GET_CHAT,
+    UPDATE_CHAT,
     SEND_CHAT
 } = require('../Events');
 
@@ -30,10 +31,10 @@ module.exports = function (socket) {
     console.log(`Socket ID: ${socket.id}`);
 
     socket.on(VERIFY_USER, (username, callback) => {
+
         if (isUser(connectedUsers, username)) {
             callback({
-                isUser: true,
-                user: null
+                isUser: true
             })
         } else {
             callback({
@@ -48,6 +49,35 @@ module.exports = function (socket) {
     socket.on(USER_CONNECTED, (user) => {
         connectedUsers = addUser(connectedUsers, user);
         socket.user = user;
+
+        let refChatId = socket.handshake.headers.referer
+            .replace(/^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/g, '$6')
+            .replace('?chat=', '');
+        console.log(`Referer chat ID: ${refChatId}`)
+
+        for (chat of chats) {
+            if (chat.id === refChatId) {
+                console.log('need to send chat:', chat.name);
+                /*chat.users.push(user);*/
+                console.log('before sending',chat)
+                socket.emit(SEND_CHAT, chat);
+                console.log('need to add user:', user.name, 'to', chat.id);
+                io.emit(ADD_USER_TO_CHAT, chat.id, user);
+
+            }
+        }
+
+    })
+
+    socket.on('disconnect', () => {
+
+        console.log(`Socket ${socket.id} disconnected.`);
+        let user = socket.user;
+
+        if (!!user) {
+            chats = removeUserFromChats(user);
+            connectedUsers = removeUser(connectedUsers, user)
+        }
     })
 
     socket.on(LOGOUT, () => {
@@ -87,7 +117,19 @@ module.exports = function (socket) {
     socket.on(GET_CHAT, (chatId) => {
         for (let chat of chats) {
             if (chatId === chat.id) {
+                if(!chat.users.filter(user=>socket.user.id===user.id)){
+                    console.log('get chat')
+                    chat.users.push(socket.user)
+                }
                 socket.emit(SEND_CHAT, chat)
+            }
+        }
+    })
+
+    socket.on(UPDATE_CHAT, (chatId) => {
+        for (let chat of chats) {
+            if (chatId === chat.id) {
+                socket.emit(UPDATE_CHAT, chat)
             }
         }
     })

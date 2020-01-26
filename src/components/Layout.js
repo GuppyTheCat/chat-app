@@ -21,7 +21,12 @@ export default class Layout extends Component {
     }
 
     initSocket = () => {
-        const socket = io(socketUrl);
+        const socket = io.connect(socketUrl, {
+            reconnection: true,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
+            reconnectionAttempts: Infinity
+        });
 
         this.setState({ socket });
     }
@@ -45,9 +50,9 @@ export default class Layout extends Component {
             <React.Fragment>
                 {
                     !user ?
-                        <LoginForm socket={socket} setUser={this.setUser}/>
+                        <LoginForm socket={socket} setUser={this.setUser} />
                         :
-                        <ChatContainer socket={socket} user={user} logout={this.logout}/>
+                        <ChatContainer socket={socket} user={user} logout={this.logout} />
                 }
             </React.Fragment>
         );
