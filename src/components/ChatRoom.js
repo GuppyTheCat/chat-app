@@ -26,24 +26,18 @@ export default class ChatRoom extends Component {
         const { activeChat, user, socket, chats } = this.props;
 
         return (
-            <Container>
-                <Row>
-                    <Col>
-                        <ChatMessages
-                            chats={chats}
-                            activeChat={activeChat}
-                            user={user}
-                        />
-                    </Col>
-                </Row>
-                <Row className='textInput'>
-                    <TextInput
-                        socket={socket}
-                        user={user}
-                        activeChat={activeChat}
-                    />
-                </Row>
-            </Container>
+            <div className="chat-room">
+                <ChatMessages
+                    chats={chats}
+                    activeChat={activeChat}
+                    user={user}
+                />
+                <TextInput
+                    socket={socket}
+                    user={user}
+                    activeChat={activeChat}
+                />
+            </div>
         )
     }
 }

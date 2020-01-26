@@ -1,0 +1,13 @@
+
+.text-form{
+    display: flex;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.text-input{
+    margin-right: 10px;
+}
+.text-button{
+    width: 20%;
+    margin-left: 10px;
+}

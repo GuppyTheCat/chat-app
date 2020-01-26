@@ -1,9 +1,44 @@
+.thread-container {
+    flex-grow: 1;
+    overflow-y: scroll;
+    margin: 15px 0;
+}
+
+.thread {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
 .message-container {
     display: flex;
     justify-content: flex-start;
     min-height: 50px;
     margin: 10px 15px;
-    background-color: green;
+
+    animation: .65s ease-out 0s show;
+}
+
+@keyframes show {
+    0% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.message-container .time {
+    order: 1;
+}
+
+.message-container .data {
+    order: 2;
+    height: 100%;
+    margin-left: 15px;
 }
 
 .message-container .name {
@@ -12,19 +47,31 @@
     text-align: right;
 }
 
-.message-container .message{
+.message-container .message {
+    background-color: #cce5ff;
     border-radius: 5px;
     border-top-left-radius: 0;
-    box-sizing: border-box;	
-    height:100%;
+    box-sizing: border-box;
+    height: 100%;
     padding: 10px 15px;
     position: relative;
 }
 
+
 .message-container.right {
     text-align: right;
     justify-content: flex-end;
-    background-color: blue;
+}
+
+.message-container.right .time {
+    order: 2;
+}
+
+.message-container.right .data {
+    order: 1;
+    height: 100%;
+    margin-left: 0;
+    margin-right: 15px;
 }
 
 .message-container.right .name {
@@ -34,4 +81,5 @@
 .message-container.right .message {
     border-top-right-radius: 0;
     border-top-left-radius: 5px;
+    background: #f4f4f8;
 }

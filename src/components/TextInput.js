@@ -36,17 +36,21 @@ export default class TextInput extends Component {
         const { message } = this.state
         return (
             <React.Fragment>
-                <Col className='message-input col-8 col-lg-9'>
+                <div className='text-form'>
                     <FormControl
                         type="text"
                         placeholder="Enter your message"
                         onChange={this.handleTextChange}
                         value={message}
+                        className='text-input'
                     />
-                </Col>
-                <Col className='message-button col-4 col-lg-3'>
-                    <Button  onClick={this.handleSubmit}>Send message</Button>
-                </Col>
+                    <Button
+                        onClick={this.handleSubmit}
+                        className='text-button'
+                        >
+                        Send
+                    </Button>
+                </div>
             </React.Fragment>
         )
     }

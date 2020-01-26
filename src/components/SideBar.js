@@ -13,7 +13,6 @@ export default class SideBar extends Component {
         }
     }
 
-
     createNewChat = () => {
         const { socket } = this.props;
         let chatName = this.state.newChatRoomTitle;
@@ -21,6 +20,7 @@ export default class SideBar extends Component {
         if (chatName) {
             socket.emit(CREATE_NEW_CHAT, chatName, user);
         }
+        this.setState({ newChatRoomTitle: '' })
     }
 
     handleChatRoomTitleChange = (e) => {
@@ -28,35 +28,51 @@ export default class SideBar extends Component {
     }
 
     render() {
-        const { chats, activeChat, user, setActiveChat, logout } = this.props;
+        const { chats, user, setActiveChat, logout } = this.props;
+        const { newChatRoomTitle } = this.state
         return (
             <React.Fragment>
-                <div>
-                    <h4>Chat App</h4>
-                    <p className='greeting'>Welcome, {user.name}!</p>
-                    <Form>
-                        <Form.Control type="text" placeholder="Enter chat room title" onChange={this.handleChatRoomTitleChange} />
-                        <Button className='createChatButton' onClick={this.createNewChat} variant='light'>Create chat room</Button>
-                    </Form>
-                </div>
-                <div>
-                    <ListGroup>
-                        {
-                            chats.map((chat) =>
-                                <ListGroup.Item
-                                    key={chat.id}
-                                    className='chatList-title'
-                                    onClick={() => { setActiveChat(chat) }}
-                                >
-                                    {chat.name}
-                                </ListGroup.Item>
-                            )
-                        }
-                    </ListGroup>
-                </div>
-                <Button onClick={logout} className='bg-danger logout-button'>
-                    Logout
-				</Button>
+                <Row>
+                    <Col className='sidebar-title col-12 my-3'>
+                        <h4>Chat App</h4>
+                    </Col>
+                    <Col className='sidebar-greeting col-12 mb-2'>
+                        <p>Welcome, {user.name}!</p>
+                    </Col>
+                    <Col className='sidebar-newChatForm col-12'>
+                        <Form>
+                            <Form.Control 
+                            type="text" 
+                            placeholder="Enter chat room title" 
+                            onChange={this.handleChatRoomTitleChange}
+                            value={newChatRoomTitle} 
+                            />
+                            <Button className='createChatButton' onClick={this.createNewChat} variant='light'>Create chat room</Button>
+                        </Form>
+                    </Col>
+                    <Col className='sidebar-chatList col-12'>
+                        <ListGroup>
+                            {
+                                chats.map((chat) =>
+                                    <ListGroup.Item
+                                        key={chat.id}
+                                        className='chatList-title'
+                                        onClick={() => { setActiveChat(chat) }}
+                                    >
+                                        {chat.name}
+                                    </ListGroup.Item>
+                                )
+                            }
+                        </ListGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className='sidebar-logout'>
+                        <Button onClick={logout} className='bg-danger logout-button'>
+                            Logout
+				        </Button>
+                    </Col>
+                </Row>
             </React.Fragment>
         )
     }

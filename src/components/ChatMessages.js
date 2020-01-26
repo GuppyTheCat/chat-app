@@ -29,19 +29,24 @@ export default class ChatMessages extends Component {
         const { user } = this.props;
         console.log(messages)
         return (
-            <React.Fragment>
-                {
-                    messages &&
-                    messages.map(message => {
-                        return (
-                            <div key={message.id} className={`message-container ${message.sender.id === user.id && 'right'}`}>
-                                <div className="message">{message.message}</div>
-                                <div className="name">{message.sender.name}</div>
-                            </div>
-                        )
-                    })
-                }
-            </React.Fragment>
+            <div className="thread-container">
+                <div className="thread">
+                    {
+                        messages &&
+                        messages.map(message => {
+                            return (
+                                <div key={message.id} className={`message-container ${message.sender.id === user.id && 'right'}`}>
+                                    <div className="time">{message.time}</div>
+                                    <div className="data">
+                                        <div className="message">{message.message}</div>
+                                        <div className="name">{message.sender.name}</div>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            </div>
         )
     }
 }

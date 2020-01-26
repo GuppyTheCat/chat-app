@@ -50,7 +50,7 @@ export default class ChatContainer extends Component {
         socket.on(RECIEVE_MESSAGE, (chatId, message) => {
             const { chats } = this.state;
             let newChats = chats.map((chat) => {
-                
+
                 if (chat.id === chatId) {
                     chat.messages.push(message)
                 }
@@ -78,9 +78,9 @@ export default class ChatContainer extends Component {
         const { activeChat, chats } = this.state
 
         return (
-            <Container fluid className='chatContainer'>
-                <Row className='h-100'>
-                    <Col className='sidebar' sm='5' md='4' lg='3'>
+            <Container fluid className="flex-container">
+                <Row>
+                    <Col className='sidebar-container'>
                         <SideBar
                             socket={socket}
                             logout={logout}
@@ -89,7 +89,7 @@ export default class ChatContainer extends Component {
                             activeChat={activeChat}
                             setActiveChat={(chat) => this.setActiveChat(chat)} />
                     </Col>
-                    <Col className='chat-room bg-light' sm='7' md='8' lg='9'>
+                    <Col className="chat-room-container">
                         <ChatRoom
                             socket={socket}
                             user={user}
