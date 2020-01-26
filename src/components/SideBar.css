@@ -1,8 +1,8 @@
 .logout-button {
-    margin: 20px 0;
+    margin: 20px 0 !important;
 }
 
-.createChatButton {
-    width: 100% !important;
-    margin: .5rem 0 2rem 0;
+.createChat-button {
+    width: 100%;
+    margin: .5rem 0 2rem 0 !important;
 }

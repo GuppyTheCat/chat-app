@@ -1,13 +1,22 @@
-
-.text-form{
+.button-container {
     display: flex;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    align-items: center;
+    margin-left: 10px;
+    min-width: 15%;
+    white-space: nowrap;
 }
-.text-input{
+
+.input-container {
+    flex-grow: 1;
     margin-right: 10px;
 }
-.text-button{
-    width: 20%;
-    margin-left: 10px;
+
+.text-form {
+    display: flex;
+    padding-top: 20px;
+    padding-bottom: 5px;
+}
+
+.text-input{
+    margin-bottom: 0;
 }

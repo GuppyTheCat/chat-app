@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormControl, Button, Col } from 'react-bootstrap';
+import { MDBInput, MDBBtn } from 'mdbreact';
 import { CREATE_NEW_MESSAGE } from '../Events';
 import './TextInput.css';
 
@@ -28,23 +28,25 @@ export default class TextInput extends Component {
     render() {
         const { message } = this.state
         return (
-            <React.Fragment>
-                <div className='text-form'>
-                    <FormControl
+            <div className='text-form'>
+                <div className='input-container'>
+                    <MDBInput
                         type="text"
                         placeholder="Enter your message"
                         onChange={this.handleTextChange}
                         value={message}
                         className='text-input'
                     />
-                    <Button
-                        onClick={this.handleSubmit}
-                        className='text-button'
-                        >
-                        Send
-                    </Button>
                 </div>
-            </React.Fragment>
+                <div className='button-container'>
+                    <MDBBtn
+                        color="primary"
+                        onClick={this.handleSubmit}
+                        className='text-button'>
+                        Send
+                    </MDBBtn>
+                </div>
+            </div>
         )
     }
 }

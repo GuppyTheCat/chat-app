@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Alert, Container, Row, Col } from 'react-bootstrap';
+import { MDBAlert, MDBContainer, MDBRow, MDBCol, MDBInput } from 'mdbreact';
 import { VERIFY_USER } from '../Events';
 
 
@@ -42,26 +42,26 @@ export default class LoginForm extends Component {
     render() {
         const { username, error } = this.state;
         return (
-            <Container fluid>
-                <Row className="justify-content-center align-items-center vh-100">
-                    <Col sm='6 ' md='5' lg='4' xl='3'>
-                        <Form onSubmit={this.handleSubmit} className='login-form'>
-                            <Form.Label>Enter your nickname</Form.Label>
-                            <Form.Control
+            <MDBContainer fluid>
+                <MDBRow className="justify-content-center align-items-center vh-100">
+                    <MDBCol sm='6 ' md='5' lg='4' xl='3'>
+                        <form onSubmit={this.handleSubmit} className='login-form'>
+                            <label>Enter your nickname</label>
+                            <MDBInput
                                 type='text'
                                 id='username'
                                 value={username}
                                 onChange={this.handleChange}
                                 placeholder='Username' />
                             {
-                                <Alert variant='danger' className={error ? 'visible' : 'invisible'}>
+                                <MDBAlert color='danger' className={error ? 'visible' : 'invisible'}>
                                     {error}
-                                </Alert>
+                                </MDBAlert>
                             }
-                        </Form>
-                    </Col>
-                </Row>
-            </Container>
+                        </form>
+                    </MDBCol>
+                </MDBRow>
+            </MDBContainer>
         )
     }
 }

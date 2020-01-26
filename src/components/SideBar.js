@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Button, Form, ListGroup } from 'react-bootstrap';
+import { MDBRow, MDBCol, MDBBtn, MDBListGroup, MDBListGroupItem, MDBInput } from 'mdbreact';
 import { CREATE_NEW_CHAT, GET_CHAT } from '../Events';
 import './SideBar.css';
 
@@ -40,48 +40,48 @@ export default class SideBar extends Component {
 
         return (
             <React.Fragment>
-                <Row>
-                    <Col className='sidebar-title col-12 my-3'>
+                <MDBRow>
+                    <MDBCol className='sidebar-title col-12 my-3'>
                         <h4>Chat App</h4>
-                    </Col>
-                    <Col className='sidebar-greeting col-12 mb-2'>
+                    </MDBCol>
+                    <MDBCol className='sidebar-greeting col-12 mb-2'>
                         <p>Welcome, {user.name}!</p>
-                    </Col>
-                    <Col className='sidebar-newChatForm col-12'>
-                        <Form>
-                            <Form.Control
+                    </MDBCol>
+                    <MDBCol className='col-12'>
+                        <form>
+                            <MDBInput
                                 type="text"
                                 placeholder="Enter chat room title"
                                 onChange={this.handleChatRoomTitleChange}
                                 value={newChatRoomTitle}
                             />
-                            <Button className='createChatButton' onClick={this.createNewChat} variant='light'>Create chat room</Button>
-                        </Form>
-                    </Col>
-                    <Col className='sidebar-chatList col-12'>
-                        <ListGroup>
+                            <MDBBtn className='createChat-button' onClick={this.createNewChat} color="primary">Create chat room</MDBBtn>
+                        </form>
+                    </MDBCol>
+                    <MDBCol className='col-12'>
+                        <MDBListGroup>
                             {
                                 chats.map((chat) =>
-                                    <ListGroup.Item
+                                    <MDBListGroupItem
                                         key={chat.id}
                                         className='chatList-title'
                                         value={chat.id}
                                         onClick={this.enterChat}
                                     >
                                         {chat.name}
-                                    </ListGroup.Item>
+                                    </MDBListGroupItem>
                                 )
                             }
-                        </ListGroup>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col className='sidebar-logout'>
-                        <Button onClick={logout} className='bg-danger logout-button'>
+                        </MDBListGroup>
+                    </MDBCol>
+                </MDBRow>
+                <MDBRow>
+                    <MDBCol className='sidebar-logout'>
+                        <MDBBtn onClick={logout} className='logout-button' color="danger">
                             Logout
-				        </Button>
-                    </Col>
-                </Row>
+				        </MDBBtn>
+                    </MDBCol>
+                </MDBRow>
             </React.Fragment>
         )
     }

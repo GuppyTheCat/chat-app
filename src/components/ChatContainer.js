@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
 import { DEFAULT_CHAT, NEW_CHAT_CREATED, ADD_USER_TO_CHAT, RECIEVE_MESSAGE, SEND_CHAT } from '../Events';
 import './ChatContainer.css';
 import SideBar from './SideBar'
@@ -35,7 +35,7 @@ export default class ChatContainer extends Component {
 
         socket.on(ADD_USER_TO_CHAT, (chatId, user) => {
             const { chats } = this.state;
-            
+
             let newChats = chats.map(chat => {
                 if (chat.id === chatId) {
                     chat.users.push(user)
@@ -92,9 +92,9 @@ export default class ChatContainer extends Component {
         const { activeChat, chats } = this.state;
 
         return (
-            <Container fluid className="flex-container">
-                <Row className='vw-100'>
-                    <Col className='sidebar-container'>
+            <MDBContainer fluid className="flex-container">
+                <MDBRow className='vw-100'>
+                    <MDBCol className='sidebar-container'>
                         <SideBar
                             socket={socket}
                             logout={logout}
@@ -102,17 +102,17 @@ export default class ChatContainer extends Component {
                             user={user}
                             activeChat={activeChat}
                             setActiveChat={(chatId) => this.setActiveChat(chatId)} />
-                    </Col>
-                    <Col className="chat-room-container">
+                    </MDBCol>
+                    <MDBCol className="chat-room-container">
                         <ChatRoom
                             socket={socket}
                             user={user}
                             activeChat={activeChat}
                             chats={chats}
                         />
-                    </Col>
-                </Row>
-            </Container>
+                    </MDBCol>
+                </MDBRow>
+            </MDBContainer>
         )
     }
 
