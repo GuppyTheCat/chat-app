@@ -12,6 +12,15 @@
     justify-content: flex-end;
 }
 
+.typing-user{
+	text-align: right;
+	margin: 10px 15px;
+}
+
+.header-container{
+    flex-shrink: 0;
+}
+
 .message-container {
     display: flex;
     justify-content: flex-start;
@@ -55,6 +64,7 @@
     height: 100%;
     padding: 10px 15px;
     position: relative;
+    word-break: break-all; 
 }
 
 

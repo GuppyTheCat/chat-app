@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
-import { DEFAULT_CHAT, NEW_CHAT_CREATED, ADD_USER_TO_CHAT, RECIEVE_MESSAGE, UPDATE_CHAT, GET_CHAT, SEND_CHAT, USER_DISCONNECTED } from '../Events';
+import { DEFAULT_CHAT, NEW_CHAT_CREATED, ADD_USER_TO_CHAT, RECIEVE_MESSAGE, UPDATE_CHAT, GET_CHAT, SEND_CHAT, USER_DISCONNECTED, TYPING } from '../Events';
 import './ChatContainer.css';
-import SideBar from './SideBar'
-import ChatRoom from './ChatRoom'
+import SideBar from './SideBar';
+import ChatHeader from './ChatHeader';
+import ChatMessages from './ChatMessages';
+import ChatInput from './ChatInput';
 
 export default class ChatContainer extends Component {
     constructor(props) {
@@ -91,6 +93,23 @@ export default class ChatContainer extends Component {
         socket.on(USER_DISCONNECTED, (user) => {
             this.removeUserFromChats(user);
         });
+
+        socket.on(TYPING, (chatId, user, isTyping) => {
+            if (user.name !== this.props.user.name) {
+
+                const { chats } = this.state
+                let newChats = chats.map((chat) => {
+                    if (chat.id === chatId) {
+                        if (isTyping && !chat.typingUsers.includes(user.name))
+                            chat.typingUsers.push(user.name)
+                        else if (!isTyping && chat.typingUsers.includes(user.name))
+                            chat.typingUsers = chat.typingUsers.filter(u => u !== user.name)
+                    }
+                    return chat;
+                })
+                this.setState({ chats: newChats })
+            }
+        })
     }
 
     addChat = (chat) => {
@@ -115,6 +134,13 @@ export default class ChatContainer extends Component {
         this.setState({ chats: newChats })
     }
 
+    sendTyping(chatId, user, isTyping) {
+
+        const { socket } = this.props
+        socket.emit(TYPING, chatId, user, isTyping)
+
+    }
+
     render() {
         const { user, logout, socket } = this.props;
         const { activeChat, chats } = this.state;
@@ -132,11 +158,21 @@ export default class ChatContainer extends Component {
                             setActiveChat={(chatId) => this.setActiveChat(chatId)} />
                     </MDBCol>
                     <MDBCol className="chat-room-container">
-                        <ChatRoom
+                        <ChatHeader />
+                        <ChatMessages
+                            chats={chats}
+                            activeChat={activeChat}
+                            user={user}
+                        />
+                        <ChatInput
                             socket={socket}
                             user={user}
                             activeChat={activeChat}
-                            chats={chats}
+                            sendTyping={
+                                (isTyping) => {
+                                    this.sendTyping(activeChat, user, isTyping)
+                                }
+                            }
                         />
                     </MDBCol>
                 </MDBRow>

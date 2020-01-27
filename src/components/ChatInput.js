@@ -25,8 +25,43 @@ export default class ChatInput extends Component {
         socket.emit(CREATE_NEW_MESSAGE, activeChat, user, message)
     }
 
+
+
+
+    componentWillUnmount() {
+        this.stopCheckingTyping();
+
+    }
+
+    sendTyping() {
+        
+        this.lastUpdateTime = Date.now()
+        if (!this.state.isTyping) {
+            this.setState({ isTyping: true })
+            this.props.sendTyping(true);
+            this.startCheckingTyping()
+        }
+    }
+
+    startCheckingTyping() {
+        this.typingInterval = setInterval(() => {
+
+            if ((Date.now() - this.lastUpdateTime) > 300) {
+                this.setState({ isTyping: false })
+                this.stopCheckingTyping()
+            }
+        }, 300)
+    }
+
+    stopCheckingTyping() {
+        if (this.typingInterval) {
+            clearInterval(this.typingInterval)
+            this.props.sendTyping(false)
+        }
+    }
+
     render() {
-        const { message } = this.state
+        const { message, isTyping } = this.state
         return (
             <div className='text-form'>
                 <div className='input-container'>
@@ -36,6 +71,7 @@ export default class ChatInput extends Component {
                         onChange={this.handleTextChange}
                         value={message}
                         className='text-input'
+                        onKeyUp={(e)=>{ e.keyCode !== 13 && this.sendTyping() }}
                     />
                 </div>
                 <div className='button-container'>

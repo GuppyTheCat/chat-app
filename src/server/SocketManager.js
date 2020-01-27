@@ -13,7 +13,8 @@ const {
     RECIEVE_MESSAGE,
     GET_CHAT,
     UPDATE_CHAT,
-    SEND_CHAT
+    SEND_CHAT,
+    TYPING
 } = require('../Events');
 
 const {
@@ -123,7 +124,11 @@ module.exports = function (socket) {
         })
     })
 
+    socket.on(TYPING, (chatId, user, isTyping) => {
+        io.emit(TYPING, chatId, user, isTyping )
+    })
 }
+
 
 function isUser(userList, username) {
     return username in userList
