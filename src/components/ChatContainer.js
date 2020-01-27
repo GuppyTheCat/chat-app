@@ -61,18 +61,11 @@ export default class ChatContainer extends Component {
         })
 
         socket.on(RECIEVE_MESSAGE, (chatId, message) => {
-            const { chats } = this.state;
-            let newChats = chats.map((chat) => {
-
-                if (chat.id === chatId) {
-                    chat.messages.push(message)
-                }
-                return chat;
-            })
-            this.setState({ chats: newChats })
+            this.addMesageToChat(chatId, message);
         })
 
         socket.on(UPDATE_CHAT, (newChat) => {
+
             const { chats } = this.state;
 
             let newChats = chats.map((chat) => {
@@ -95,20 +88,7 @@ export default class ChatContainer extends Component {
         });
 
         socket.on(TYPING, (chatId, user, isTyping) => {
-            if (user.name !== this.props.user.name) {
-
-                const { chats } = this.state
-                let newChats = chats.map((chat) => {
-                    if (chat.id === chatId) {
-                        if (isTyping && !chat.typingUsers.includes(user.name))
-                            chat.typingUsers.push(user.name)
-                        else if (!isTyping && chat.typingUsers.includes(user.name))
-                            chat.typingUsers = chat.typingUsers.filter(u => u !== user.name)
-                    }
-                    return chat;
-                })
-                this.setState({ chats: newChats })
-            }
+            this.updateTypingUsers(chatId, user, isTyping)
         })
     }
 
@@ -118,6 +98,19 @@ export default class ChatContainer extends Component {
 
         this.setState({ chats: newChats });
 
+    }
+
+    addMesageToChat = (chatId, message) => {
+        const { chats } = this.state;
+
+        let newChats = chats.map((chat) => {
+            if (chat.id === chatId) {
+                chat.messages.push(message)
+            }
+            return chat;
+        })
+
+        this.setState({ chats: newChats })
     }
 
     setActiveChat(chatId) {
@@ -139,6 +132,23 @@ export default class ChatContainer extends Component {
         const { socket } = this.props
         socket.emit(TYPING, chatId, user, isTyping)
 
+    }
+
+    updateTypingUsers(chatId, user, isTyping){
+        if (user.name !== this.props.user.name) {
+
+            const { chats } = this.state
+            let newChats = chats.map((chat) => {
+                if (chat.id === chatId) {
+                    if (isTyping && !chat.typingUsers.includes(user.name))
+                        chat.typingUsers.push(user.name)
+                    else if (!isTyping && chat.typingUsers.includes(user.name))
+                        chat.typingUsers = chat.typingUsers.filter(u => u !== user.name)
+                }
+                return chat;
+            })
+            this.setState({ chats: newChats })
+        }
     }
 
     render() {

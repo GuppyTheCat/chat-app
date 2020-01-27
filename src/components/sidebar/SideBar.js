@@ -22,13 +22,6 @@ export default class SideBar extends Component {
         });
     }
 
-    enterChat = (e) => {
-        const { socket } = this.props;
-        let chatId = e.currentTarget.getAttribute('value');
-        this.props.setActiveChat(chatId);
-        socket.emit(UPDATE_CHAT, chatId);
-    }
-
     render() {
         const { chats, user, logout, socket } = this.props;
         const { modal } = this.state;
