@@ -11,7 +11,8 @@ export default class ChatMessages extends Component {
         }
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.chats !== this.props.chats)
+        //Rerender at props change
+        if (prevProps.chats !== this.props.chats || prevProps.activeChat !== this.props.activeChat)
             this.activeChatMessages();
     }
 

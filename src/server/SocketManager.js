@@ -58,13 +58,8 @@ module.exports = function (socket) {
 
         for (chat of chats) {
             if (chat.id === refChatId) {
-                console.log('need to send chat:', chat.name);
-                /*chat.users.push(user);*/
-                console.log('before sending',chat)
                 socket.emit(SEND_CHAT, chat);
-                console.log('need to add user:', user.name, 'to', chat.id);
                 io.emit(ADD_USER_TO_CHAT, chat.id, user);
-
             }
         }
 
@@ -74,10 +69,11 @@ module.exports = function (socket) {
 
         console.log(`Socket ${socket.id} disconnected.`);
         let user = socket.user;
-
-        chats = removeUserFromChats(user);
-        io.emit(USER_DISCONNECTED, user);
-        connectedUsers = removeUser(connectedUsers, user);
+        if (!!user) {
+            chats = removeUserFromChats(user);
+            io.emit(USER_DISCONNECTED, user);
+            connectedUsers = removeUser(connectedUsers, user);
+        }
     })
 
     socket.on(LOGOUT, () => {
@@ -118,7 +114,7 @@ module.exports = function (socket) {
     socket.on(GET_CHAT, (chatId) => {
         for (let chat of chats) {
             if (chatId === chat.id) {
-                if(!chat.users.filter(user=>socket.user.id===user.id)){
+                if (!chat.users.filter(user => socket.user.id === user.id)) {
                     console.log('get chat')
                     chat.users.push(socket.user)
                 }
