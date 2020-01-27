@@ -21,12 +21,7 @@ export default class Layout extends Component {
     }
 
     initSocket = () => {
-        const socket = io.connect(socketUrl, {
-            reconnection: true,
-            reconnectionDelay: 1000,
-            reconnectionDelayMax: 5000,
-            reconnectionAttempts: Infinity
-        });
+        const socket = io(socketUrl);
 
         this.setState({ socket });
     }

@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
-import { UPDATE_CHAT } from '../Events';
-import {
-    MDBNavbar,
-    MDBNavbarBrand,
-    MDBNavbarNav,
-    MDBNavItem,
-    MDBNavLink,
-    MDBNavbarToggler,
-    MDBCollapse,
-    MDBContainer
-} from 'mdbreact';
+import { UPDATE_CHAT } from '../../Events';
+import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse, MDBContainer } from 'mdbreact';
 import { BrowserRouter as Router } from 'react-router-dom';
+import './ChatsList.css';
 
 export default class ChatsList extends Component {
     state = {
@@ -45,7 +37,7 @@ export default class ChatsList extends Component {
                         light
                     >
                         <MDBContainer className='p-0'>
-                            <MDBNavbarBrand>{title}</MDBNavbarBrand>
+                            <MDBNavbarBrand className='chat-title'>{title}</MDBNavbarBrand>
                             <MDBNavbarToggler
                                 onClick={this.toggleCollapse(`navbarCollapse${id}`)}
                                 className='p-0'

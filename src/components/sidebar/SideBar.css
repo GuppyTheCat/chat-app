@@ -11,3 +11,8 @@
     height: 60px;
     text-align: center;
 }
+
+.chat-list-container{
+    overflow-y: auto;
+    min-height: 100%;
+}

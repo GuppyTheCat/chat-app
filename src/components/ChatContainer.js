@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
 import { DEFAULT_CHAT, NEW_CHAT_CREATED, ADD_USER_TO_CHAT, RECIEVE_MESSAGE, UPDATE_CHAT, GET_CHAT, SEND_CHAT, USER_DISCONNECTED, TYPING } from '../Events';
 import './ChatContainer.css';
-import SideBar from './SideBar';
-import ChatHeader from './ChatHeader';
-import ChatMessages from './ChatMessages';
-import ChatInput from './ChatInput';
+import SideBar from './sidebar/SideBar';
+import ChatHeader from './messages/ChatHeader';
+import ChatMessages from './messages/ChatMessages';
+import ChatInput from './messages/ChatInput';
 
 export default class ChatContainer extends Component {
     constructor(props) {

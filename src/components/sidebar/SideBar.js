@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { MDBRow, MDBCol, MDBBtn, MDBListGroup, MDBListGroupItem, MDBInput } from 'mdbreact';
-import { CREATE_NEW_CHAT, UPDATE_CHAT } from '../Events';
+import { MDBRow, MDBCol, MDBBtn } from 'mdbreact';
+import { UPDATE_CHAT } from '../../Events';
 import ChatsList from './ChatsList';
+import NewChatModal from './NewChatModal';
 import './SideBar.css';
 
 export default class SideBar extends Component {
@@ -10,22 +11,15 @@ export default class SideBar extends Component {
         super(props)
 
         this.state = {
-            newChatRoomTitle: ''
+            newChatRoomTitle: '',
+            modal: false
         }
     }
 
-    createNewChat = () => {
-        const { socket } = this.props;
-        let chatName = this.state.newChatRoomTitle;
-        let user = this.props.user;
-        if (chatName) {
-            socket.emit(CREATE_NEW_CHAT, chatName, user);
-        }
-        this.setState({ newChatRoomTitle: '' })
-    }
-
-    handleChatRoomTitleChange = (e) => {
-        this.setState({ newChatRoomTitle: e.target.value })
+    toggle = () => {
+        this.setState({
+            modal: !this.state.modal
+        });
     }
 
     enterChat = (e) => {
@@ -36,8 +30,8 @@ export default class SideBar extends Component {
     }
 
     render() {
-        const { chats, user, logout, setActiveChat, socket } = this.props;
-        const { newChatRoomTitle } = this.state;
+        const { chats, user, logout, socket } = this.props;
+        const { modal } = this.state;
 
         return (
             <React.Fragment>
@@ -49,17 +43,15 @@ export default class SideBar extends Component {
                         <p>Welcome, {user.name}!</p>
                     </MDBCol>
                     <MDBCol className='col-12'>
-                        <form>
-                            <MDBInput
-                                type="text"
-                                placeholder="Enter chat room title"
-                                onChange={this.handleChatRoomTitleChange}
-                                value={newChatRoomTitle}
-                            />
-                            <MDBBtn className='createChat-button' onClick={this.createNewChat} color="primary">Create chat room</MDBBtn>
-                        </form>
+                        <MDBBtn className='createChat-button' onClick={this.toggle} color="primary">Create chat room</MDBBtn>
+                        <NewChatModal
+                            socket={socket}
+                            user={user}
+                            modal={modal}
+                            toggle={this.toggle}
+                        />
                     </MDBCol>
-                    <MDBCol className='col-12'>
+                    <MDBCol className='col-12 chat-list-container'>
                         {
                             chats.map((chat) =>
                                 <ChatsList

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { MDBInput, MDBBtn } from 'mdbreact';
-import { CREATE_NEW_MESSAGE } from '../Events';
+import { CREATE_NEW_MESSAGE } from '../../Events';
 import './ChatInput.css';
 
 export default class ChatInput extends Component {
@@ -11,8 +11,10 @@ export default class ChatInput extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.sendMessage();
-        this.setState({ message: "" });
+        if (this.state.message !== '') {
+            this.sendMessage();
+            this.setState({ message: '' });
+        }
     }
 
     handleTextChange = (e) => {
@@ -34,7 +36,7 @@ export default class ChatInput extends Component {
     }
 
     sendTyping() {
-        
+
         this.lastUpdateTime = Date.now()
         if (!this.state.isTyping) {
             this.setState({ isTyping: true })
@@ -71,7 +73,7 @@ export default class ChatInput extends Component {
                         onChange={this.handleTextChange}
                         value={message}
                         className='text-input'
-                        onKeyUp={(e)=>{ e.keyCode !== 13 && this.sendTyping() }}
+                        onKeyUp={(e) => { e.keyCode === 13 ? this.handleSubmit(e) : this.sendTyping() }}
                     />
                 </div>
                 <div className='button-container'>
