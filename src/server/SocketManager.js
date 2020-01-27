@@ -3,6 +3,7 @@ const io = require('./index').io;
 const {
     VERIFY_USER,
     USER_CONNECTED,
+    USER_DISCONNECTED,
     LOGOUT,
     DEFAULT_CHAT,
     CREATE_NEW_CHAT,
@@ -74,16 +75,16 @@ module.exports = function (socket) {
         console.log(`Socket ${socket.id} disconnected.`);
         let user = socket.user;
 
-        if (!!user) {
-            chats = removeUserFromChats(user);
-            connectedUsers = removeUser(connectedUsers, user)
-        }
+        chats = removeUserFromChats(user);
+        io.emit(USER_DISCONNECTED, user);
+        connectedUsers = removeUser(connectedUsers, user);
     })
 
     socket.on(LOGOUT, () => {
         let user = socket.user;
+
         chats = removeUserFromChats(user);
-        //Реализовать удаление юзера из чатов сокетов
+        io.emit(USER_DISCONNECTED, user);
         connectedUsers = removeUser(connectedUsers, user.name);
     })
 

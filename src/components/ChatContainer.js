@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
-import { DEFAULT_CHAT, NEW_CHAT_CREATED, ADD_USER_TO_CHAT, RECIEVE_MESSAGE, UPDATE_CHAT, GET_CHAT, SEND_CHAT } from '../Events';
+import { DEFAULT_CHAT, NEW_CHAT_CREATED, ADD_USER_TO_CHAT, RECIEVE_MESSAGE, UPDATE_CHAT, GET_CHAT, SEND_CHAT, USER_DISCONNECTED } from '../Events';
 import './ChatContainer.css';
 import SideBar from './SideBar'
 import ChatRoom from './ChatRoom'
@@ -38,11 +38,11 @@ export default class ChatContainer extends Component {
             const currentUser = this.props.user;
 
             //If user was connected by referal link, send him chat data before adding him to chat
-            if (user.id===currentUser.id){
-                console.log(chats ,chats.filter(chat=>chat.id===chatId))
-                if(!chats.filter(chat=>chat.id===chatId)){
+            if (user.id === currentUser.id) {
+                console.log(chats, chats.filter(chat => chat.id === chatId))
+                if (!chats.filter(chat => chat.id === chatId)) {
                     socket.emit(GET_CHAT, chatId);
-                }   
+                }
             }
 
             let newChats = chats.map(chat => {
@@ -87,6 +87,10 @@ export default class ChatContainer extends Component {
             this.addChat(newChat);
             this.setActiveChat(newChat.id);
         })
+
+        socket.on(USER_DISCONNECTED, (user) => {
+            this.removeUserFromChats(user);
+        });
     }
 
     addChat = (chat) => {
@@ -99,6 +103,16 @@ export default class ChatContainer extends Component {
 
     setActiveChat(chatId) {
         this.setState({ activeChat: chatId })
+    }
+
+    removeUserFromChats(user) {
+        const { chats } = this.state;
+
+        let newChats = chats;
+        for (let chat of newChats) {
+            chat.users = chat.users.filter(chatUser => chatUser.id !== user.id)
+        }
+        this.setState({ chats: newChats })
     }
 
     render() {
