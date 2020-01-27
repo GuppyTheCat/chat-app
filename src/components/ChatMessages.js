@@ -10,7 +10,20 @@ export default class ChatMessages extends Component {
             activeChatMessages: []
         }
     }
+
+    //Scroll down when new message appears
+    scrollDown=()=>{
+		const { container } = this.refs
+		container.scrollTop = container.scrollHeight
+    }
+
+    componentDidMount(){
+		this.scrollDown();
+	}
+
+    
     componentDidUpdate(prevProps) {
+        this.scrollDown();
         //Rerender at props change
         if (prevProps.chats !== this.props.chats || prevProps.activeChat !== this.props.activeChat)
             this.activeChatMessages();
@@ -29,7 +42,7 @@ export default class ChatMessages extends Component {
         const { user } = this.props;
 
         return (
-            <div className="thread-container">
+            <div ref={'container'}  className="thread-container">
                 <div className="thread">
                     {
                         messages &&

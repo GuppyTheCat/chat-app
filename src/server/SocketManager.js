@@ -32,7 +32,6 @@ module.exports = function (socket) {
     console.log(`Socket ID: ${socket.id}`);
 
     socket.on(VERIFY_USER, (username, callback) => {
-
         if (isUser(connectedUsers, username)) {
             callback({
                 isUser: true
@@ -52,24 +51,20 @@ module.exports = function (socket) {
         socket.user = user;
 
         let refChatId = socket.handshake.headers.referer
-            .replace(/^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/g, '$6')
-            .replace('?chat=', '');
+            .replace(/^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/g, '$5').replace('/', '')
         console.log(`Referer chat ID: ${refChatId}`)
 
-        for (chat of chats) {
-            if (chat.id === refChatId) {
-                socket.emit(SEND_CHAT, chat);
-                io.emit(ADD_USER_TO_CHAT, chat.id, user);
-            }
-        }
-
+        doSomethingWithChat(chats, refChatId, function (chat) {
+            socket.emit(SEND_CHAT, chat);
+            io.emit(ADD_USER_TO_CHAT, chat.id, user);
+        })
     })
 
     socket.on('disconnect', () => {
-
-        console.log(`Socket ${socket.id} disconnected.`);
         let user = socket.user;
+
         if (!!user) {
+            console.log(`Socket ${socket.id} disconnected.`);
             chats = removeUserFromChats(user);
             io.emit(USER_DISCONNECTED, user);
             connectedUsers = removeUser(connectedUsers, user);
@@ -86,6 +81,7 @@ module.exports = function (socket) {
 
     socket.on(DEFAULT_CHAT, (callback) => {
         let user = socket.user;
+
         callback(chats[0]);
         io.emit(ADD_USER_TO_CHAT, chats[0].id, user)
         chats[0].users.push(user);
@@ -96,39 +92,35 @@ module.exports = function (socket) {
             name: chatName,
             users: [user]
         });
+
         chats.push(newChat);
         io.emit(NEW_CHAT_CREATED, newChat, user.id);
     })
 
     socket.on(CREATE_NEW_MESSAGE, (chatId, user, message) => {
         let newMessage = createMessage({ message: message, sender: user });
-        for (let chat of chats) {
-            if (chatId === chat.id) {
-                chat.messages.push(newMessage);
-                break;
-            }
-        }
+
+        doSomethingWithChat(chats, chatId, function (chat) {
+            chat.messages.push(newMessage);
+        })
+
         io.emit(RECIEVE_MESSAGE, chatId, newMessage);
     })
 
     socket.on(GET_CHAT, (chatId) => {
-        for (let chat of chats) {
-            if (chatId === chat.id) {
-                if (!chat.users.filter(user => socket.user.id === user.id)) {
-                    console.log('get chat')
-                    chat.users.push(socket.user)
-                }
-                socket.emit(SEND_CHAT, chat)
+
+        doSomethingWithChat(chats, chatId, function (chat) {
+            if (!chat.users.filter(user => socket.user.id === user.id)) {
+                chat.users.push(socket.user)
             }
-        }
+            socket.emit(SEND_CHAT, chat)
+        })
     })
 
     socket.on(UPDATE_CHAT, (chatId) => {
-        for (let chat of chats) {
-            if (chatId === chat.id) {
-                socket.emit(UPDATE_CHAT, chat)
-            }
-        }
+        doSomethingWithChat(chats, chatId, function (chat) {
+            socket.emit(UPDATE_CHAT, chat)
+        })
     })
 
 }
@@ -154,4 +146,13 @@ function removeUserFromChats(user) {
         chat.users = chat.users.filter(chatUser => chatUser.id !== user.id)
     }
     return chats
+}
+
+function doSomethingWithChat(chats, chatId, callback) {
+    for (chat of chats) {
+        if (chat.id === chatId) {
+            let newChat = callback(chat)
+            return newChat
+        }
+    }
 }
