@@ -20,7 +20,7 @@ class NewChatModal extends Component {
         if (chatName) {
             socket.emit(CREATE_NEW_CHAT, chatName, user);
         }
-        this.setState({ newChatRoomTitle: '' })
+        this.closeModal();
     }
 
     handleChatRoomTitleChange = (e) => {
@@ -36,7 +36,10 @@ class NewChatModal extends Component {
         const { newChatRoomTitle } = this.state;
         const { modal, toggle } = this.props;
         return (
-            <MDBModal isOpen={modal} toggle={toggle}>
+            <MDBModal
+                isOpen={modal}
+                toggle={toggle}
+                onKeyUp={(e) => { e.keyCode === 13 && this.createNewChat() }}>
                 <MDBModalHeader toggle={this.toggle}>Enter chat title</MDBModalHeader>
                 <MDBModalBody>
                     <MDBInput

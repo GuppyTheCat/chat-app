@@ -1,6 +1,11 @@
-.modal-footer{
-    border-top: 0!important;
+.modal-footer {
+    border-top: 0 !important;
 }
-.modal-header{
-    justify-content: center!important;
+
+.modal-header {
+    justify-content: center !important;
+}
+
+.modal-open {
+    overflow-y: hidden !important;
 }
