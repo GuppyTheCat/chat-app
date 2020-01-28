@@ -3,8 +3,7 @@
     justify-content: space-between;
     flex-direction: column;
     flex: 0 0 250px !important;
-    background-color: #e3f2fd;
-    height: 100vh;
+    background-color: #7ebdec;
 }
 
 @media screen and (max-width: 767px) {
@@ -25,4 +24,10 @@
     justify-content: space-between;
     height: 100vh;
     width: 100%;
+}
+
+@media screen and (max-width: 575px) {
+    .chat-room-container {
+        margin-top: 20px!important;
+    }
 }

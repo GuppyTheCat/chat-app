@@ -12,7 +12,6 @@ const {
     ADD_USER_TO_CHAT,
     RECIEVE_MESSAGE,
     GET_CHAT,
-    UPDATE_CHAT,
     SEND_CHAT,
     TYPING
 } = require('../Events');
@@ -32,6 +31,10 @@ let connectedUsers = {};
 module.exports = function (socket) {
     console.log(`Socket ID: ${socket.id}`);
 
+    /*
+    * User verification.
+    * If username is not taken, create new user.
+    */
     socket.on(VERIFY_USER, (username, callback) => {
         if (isUser(connectedUsers, username)) {
             callback({
@@ -47,10 +50,17 @@ module.exports = function (socket) {
         }
     })
 
+    /*
+    * Handle user connection
+    */
     socket.on(USER_CONNECTED, (user) => {
         connectedUsers = addUser(connectedUsers, user);
         socket.user = user;
 
+        /*
+        * If user used referal link to enter chat, send him chat data like messages and so on.
+        * Then him add to chat for all users.
+        */
         let refChatId = socket.handshake.headers.referer
             .replace(/^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/g, '$5').replace('/', '')
         console.log(`Referer chat ID: ${refChatId}`)
@@ -61,6 +71,9 @@ module.exports = function (socket) {
         })
     })
 
+    /*
+    * Handle user disconnect
+    */
     socket.on('disconnect', () => {
         let user = socket.user;
 
@@ -72,6 +85,9 @@ module.exports = function (socket) {
         }
     })
 
+    /*
+    * Handle user logout
+    */
     socket.on(LOGOUT, () => {
         let user = socket.user;
 
@@ -80,6 +96,10 @@ module.exports = function (socket) {
         connectedUsers = removeUser(connectedUsers, user.name);
     })
 
+
+    /*
+    * Add user to default chat
+    */
     socket.on(DEFAULT_CHAT, (callback) => {
         let user = socket.user;
 
@@ -88,6 +108,9 @@ module.exports = function (socket) {
         chats[0].users.push(user);
     })
 
+    /*
+    * Send new chat data
+    */
     socket.on(CREATE_NEW_CHAT, (chatName, user) => {
         let newChat = createChat({
             name: chatName,
@@ -98,6 +121,9 @@ module.exports = function (socket) {
         io.emit(NEW_CHAT_CREATED, newChat, user.id);
     })
 
+    /*
+    * Send new message to users
+    */
     socket.on(CREATE_NEW_MESSAGE, (chatId, user, message) => {
         let newMessage = createMessage({ message: message, sender: user });
 
@@ -108,44 +134,52 @@ module.exports = function (socket) {
         io.emit(RECIEVE_MESSAGE, chatId, newMessage);
     })
 
+    /*
+    * Send chat to user joined by referal link
+    */
     socket.on(GET_CHAT, (chatId) => {
-
         doSomethingWithChat(chats, chatId, function (chat) {
-            if (!chat.users.filter(user => socket.user.id === user.id)) {
-                chat.users.push(socket.user)
-            }
+            chat.users.push(socket.user)
             socket.emit(SEND_CHAT, chat)
         })
     })
 
-    socket.on(UPDATE_CHAT, (chatId) => {
-        doSomethingWithChat(chats, chatId, function (chat) {
-            socket.emit(UPDATE_CHAT, chat)
-        })
-    })
-
+    /*
+    * Update typing users information
+    */
     socket.on(TYPING, (chatId, user, isTyping) => {
-        io.emit(TYPING, chatId, user, isTyping )
+        io.emit(TYPING, chatId, user, isTyping)
     })
 }
 
-
+/*
+* Check is user in user list
+*/
 function isUser(userList, username) {
     return username in userList
 }
 
+/*
+* Add user to user list
+*/
 function addUser(userList, user) {
     let newList = Object.assign({}, userList);
     newList[user.name] = user;
     return newList
 }
 
+/*
+* Remove user from user list
+*/
 function removeUser(userList, username) {
     let newList = Object.assign({}, userList);
     delete newList[username];
     return newList
 }
 
+/*
+* Remove user from all chats
+*/
 function removeUserFromChats(user) {
     for (let chat of chats) {
         chat.users = chat.users.filter(chatUser => chatUser.id !== user.id)

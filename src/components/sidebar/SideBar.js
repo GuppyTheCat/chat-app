@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { MDBRow, MDBCol, MDBBtn } from 'mdbreact';
-import { UPDATE_CHAT } from '../../Events';
 import ChatsList from './ChatsList';
 import NewChatModal from './NewChatModal';
 import './SideBar.css';
@@ -16,6 +15,9 @@ export default class SideBar extends Component {
         }
     }
 
+    /*
+    * Toggle new chat creation modal window
+    */
     toggle = () => {
         this.setState({
             modal: !this.state.modal
@@ -29,7 +31,7 @@ export default class SideBar extends Component {
         return (
             <React.Fragment>
                 <MDBRow>
-                    <MDBCol className='sidebar-title col-12 py-3 z-depth-1'>
+                    <MDBCol className='sidebar-title col-12 py-3'>
                         <h4>Chat App</h4>
                     </MDBCol>
                     <MDBCol className='sidebar-greeting col-12 py-3 text-center'>

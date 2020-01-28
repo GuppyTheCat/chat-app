@@ -20,18 +20,26 @@ export default class Layout extends Component {
         this.initSocket();
     }
 
+    /*
+    * Initialize connection with server.
+    */
     initSocket = () => {
         const socket = io(socketUrl);
-
         this.setState({ socket });
     }
 
+    /*
+    * Set active user.
+    */
     setUser = (user) => {
         const { socket } = this.state;
         socket.emit(USER_CONNECTED, user);
         this.setState({ user });
     }
 
+    /*
+    * Handle logout
+    */
     logout = () => {
         const { socket } = this.state;
         socket.emit(LOGOUT);

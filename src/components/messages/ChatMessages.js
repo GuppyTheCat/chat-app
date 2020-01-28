@@ -29,6 +29,9 @@ export default class ChatMessages extends Component {
             this.getActiveChatData();
     }
 
+    /*
+    * Get messages and typing users info for active chat
+    */
     getActiveChatData = () => {
         const { activeChat, chats } = this.props;
         if (activeChat && chats.length > 0) {

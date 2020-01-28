@@ -13,7 +13,9 @@ class NewChatModal extends Component {
         }
     }
 
-
+    /*
+    * Create new chat if chat name is valid.
+    */
     createNewChat = () => {
         const { socket, user } = this.props;
         let chatName = this.state.newChatRoomTitle;
@@ -23,10 +25,16 @@ class NewChatModal extends Component {
         this.closeModal();
     }
 
+    /*
+    * Handle chat name input
+    */
     handleChatRoomTitleChange = (e) => {
         this.setState({ newChatRoomTitle: e.target.value })
     }
 
+    /*
+    * Close modal window
+    */
     closeModal = () => {
         this.props.toggle();
         this.setState({ newChatRoomTitle: '' });

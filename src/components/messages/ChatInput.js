@@ -9,6 +9,13 @@ export default class ChatInput extends Component {
         this.state = { message: "", isTyping: false };
     }
 
+    componentWillUnmount() {
+        this.stopCheckingTyping();
+    }
+
+    /*
+    * Submit message
+    */
     handleSubmit = (e) => {
         e.preventDefault();
         if (this.state.message !== '') {
@@ -17,10 +24,16 @@ export default class ChatInput extends Component {
         }
     }
 
+    /*
+    * Handle message input change
+    */
     handleTextChange = (e) => {
         this.setState({ message: e.target.value })
     }
 
+    /*
+    * Send Message
+    */
     sendMessage = () => {
         const { activeChat, user, socket } = this.props;
         const { message } = this.state;
@@ -28,16 +41,12 @@ export default class ChatInput extends Component {
     }
 
 
-
-
-    componentWillUnmount() {
-        this.stopCheckingTyping();
-
-    }
-
+    /*
+    * Send user is typing
+    */
     sendTyping() {
-
         this.lastUpdateTime = Date.now()
+
         if (!this.state.isTyping) {
             this.setState({ isTyping: true })
             this.props.sendTyping(true);
@@ -63,7 +72,7 @@ export default class ChatInput extends Component {
     }
 
     render() {
-        const { message, isTyping } = this.state
+        const { message } = this.state
         return (
             <div className='text-form'>
                 <div className='input-container'>

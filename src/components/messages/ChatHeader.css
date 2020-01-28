@@ -1,4 +1,8 @@
 .header-container{
     height: 60px;
-    /*background-color: #e3f2fd;*/
+    display: flex;
+    align-items: center;
+    background-color: #7ebdec;
+    padding-left: 20px;
+    padding-top: 5px;
 }

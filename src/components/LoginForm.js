@@ -13,32 +13,44 @@ export default class LoginForm extends Component {
         }
     }
 
-    setUser = ({ user, isUser }) => {
-        if (isUser) {
-            this.setError('Username already exists')
-        }
-        else if (user.name === '') {
-            this.setError('Username can\'t be empty')
-        }
-        else {
-            this.props.setUser(user);
-            this.setError('');
-        }
-    }
-
-    handleSubmit = (e) => {
-        e.preventDefault();
-        const { socket } = this.props;
-        const { username } = this.state;
-        socket.emit(VERIFY_USER, username, this.setUser);
-    }
+    /* 
+    * Handle username input.
+    */
     handleChange = (e) => {
         this.setState({ username: e.target.value })
     }
 
+    /*
+    * Set error to state.
+    */
     setError = (error) => {
         this.setState({ error })
     }
+
+    /*
+    * Check is username valid. If true emit server verification.
+    */
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const { socket } = this.props;
+        const { username } = this.state;
+        username === '' ?
+            this.setError('Username can\'t be empty') :
+            socket.emit(VERIFY_USER, username, this.setUser);
+    }
+
+    /*
+    * Set active user if username is not taken.
+    */
+   setUser = ({ user, isUser }) => {
+    if (isUser) {
+        this.setError('Username already exists')
+    }
+    else {
+        this.props.setUser(user);
+        this.setError('');
+    }
+}
     render() {
         const { username, error } = this.state;
         return (
