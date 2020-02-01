@@ -13,4 +13,4 @@ React JS and socket.io chat application
 1. User can see other users in chats.
 1. User may copy link to existing chat and share it by clicking "copy" icon near chat title at chat list. 
 Anyone who uses this link may enter target chat room.
-1. When user disconnects, logs out or refresh page, he must log in again to enter chat.
+1. When user disconnects, logs out or refreshes page, he must log in again to enter chat.
